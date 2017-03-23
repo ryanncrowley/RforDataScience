@@ -1,0 +1,122 @@
+---
+title: "Chapter 2 - Visualization"
+author: "Ryann Crowley"
+date: "March 23, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+.libPaths()
+```
+
+```{r}
+install.packages(scales)
+```
+
+```{r}
+.packages(all = TRUE)
+```
+
+```{r}
+library(scales)
+library(tidyverse)
+```
+
+```{r}
+mpg
+```
+
+
+Do larger cars use more gas?
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+The plot shows a negative relationship between engine size (displ) and fuel efficiency (hwy)
+
+
+Turns plot code intoa reusable template for making graphs wiht ggplot2. 
+
+```{r}
+ggplot(data = mpg)
+```
+
+
+
+```{r}
+str(mtcars)
+head(mpg)
+```
+```{r}
+?mpg
+```
+
+Scatterplot of class ves drv
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = class, y = drv))
+```
+this plot is not helpful at all!
+
+Going back to hwy by displ (mileage by engine type), let's also look at class of car (class) by adding it to the aes (asthetic statement)
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = class))
+```
+
+The plot reveals that many of the outliers are two seater cars.  In the plot above, we mapped class to teh szie aesthetic. We could also assing alpha (shading), shape, or size.
+
+We can also assign our own aesthetic.  For example, set the points to blue. Notice, the "color = blue" statemetn is AFTER the paratheses of the aes statement.
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
+```
+
+#Exercises
+2. Which variables in mpg are categorical? Which are continuous?
+
+```{r}
+?mpg
+str(mpg)
+```
+
+3. Map a continous variable to color, size, and shape.  How do these aesthetics behave differently for categorical vs. continous variables?
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = year))
+```
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = year, size = cty))
+```
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = year, shape = cty))
+```
+Looks like continous variables cannot be assigned to shape.
+
+4. What happens when you map the same variable to multiple aethetics?
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = year, size = year))
+```
+Looks like the last aesthetic designation is the only one that is accurately displayed.  The color aesthetic has a legend but it not accurately portraded.
+
+5. What does the stroke aesthetic do?  What shapes does it work with?
+
+```{r}
+??stroke
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, stroke = year))
+```
+I don't really have a good answer for this.
+
+6. What happens if you map an aesthetic to something other than a variable name, like aes(color = displ<5)
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = displ<5))
+```
+Very cool.  Specific select statements can be made within the aesthetic!
+
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
