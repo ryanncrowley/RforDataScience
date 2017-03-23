@@ -74,7 +74,7 @@ We can also assign our own aesthetic.  For example, set the points to blue. Noti
 ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy), color = "blue")
 ```
 
-#Exercises
+##Exercises 3.3
 2. Which variables in mpg are categorical? Which are continuous?
 
 ```{r}
@@ -118,5 +118,186 @@ ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy, color = displ<
 ```
 Very cool.  Specific select statements can be made within the aesthetic!
 
+#Section 3.4 Common Problems
+#Section 3.5 Facets
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Facets a plots split by categorical variables using "facet_wrap()".
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_wrap(~ class, nrow = 2)
+```
+
+To facet your plots with a combination of two variables, use facet_grid()
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_grid(drv ~ cyl)
+```
+If you prefer not to facet a row or a column us the . character.
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_grid(. ~ cyl)
+```
+
+##Exercises 3.5
+1. What happens if you facet a continous variable?
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_wrap(~ cty)
+```
+Makes a graph for EVERY value.
+
+2. What do the empty cells in plot wiht facet_grid(drv ~ cyl) mean? How do they relate to this plot?
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = drv, y = cyl)) 
+```
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_wrap(drv ~ cyl)
+```
+Well, if cell value in the crosstabs of facet_grid is empty, there would be no data to display. Looks like the graph is omitted.  For exmample, the cross of drv = r and cyl = 4. 
+
+3. What plots does the following code make?  What does the . do?
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_grid(. ~ cyl)
+```
+The . designates "ignore". If you specify grid but don't only have one varialbe, you can fill the other with a period.  One advantage, you can specify if you want the faceting to create multiple rows or columns. 
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_grid(cyl ~ .)
+```
+4. Take the first faceted plot in this section: (see below).  What are the advanges of using faceting instead of color aesthetic?  What are the disadvantages?  How might the balance change if you had a larger dataset?
+
+
+```{r}
+ggplot(data = mpg) + geom_point(mapping = aes(x = displ, y = hwy)) + facet_wrap(~ class, nrow = 2)
+```
+Advantage - easier to see differences within a specific factet.  Disadvantage - harder to see overall trends across all data.  With a larger dataset, facetes might be even more useful to sift trhough the large number of records.
+
+5. Read ?facet_wrap.  What does nrow do? What does ncol do?  What other options control the layout of the individual panels?  Why doesn't facet_grid() have nrow and ncol?
+
+```{r}
+?facet_wrap
+```
+
+nrow and ncol - disignate the number of rows and columns. facet_grid - let's the data designate the number of rows and columns. as.table - if TRUE, will lay out the facets like a table with higest avleus at teh bottom-right.  If FALSE, will lay out like a plot with highest values at the top-right. drop, if TRUE, all factors level not used in teh data will automatically be dropped.
+
+6. When using facet_grid() you should usually put the variable with more unique levels in the columns.  Why?
+
+Easier to compare side by side versus top to bottom?
+
+#Section 3.6 Geometric objects
+
+Geoms are the geometric objects used to produce the plot.  For example: Blox, line, smooth, point. 
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+Not every aesthetic works with every geom.  For example, linetype does not work for geom_point...but linetype does work with smooth.
+
+```{r}
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+```
+To make the linetype stand out even more, it can also use color.  You can even overlay TWO geoms in the same graph. We will learn how to do so shortly.
+
+There are over 30 geoms in ggplot2.  Get a cheatsheet!
+
+For geoms that create a single object for multiple records (rows of data), a seperate object can be create for each GROUP.
+
+```{r}
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+```
+
+```{r}
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy, group = drv))
+```
+
+To display multiple geoms in the same plot, add mutiple geom functions to ggplot().
+
+```{r}
+ggplot(data = mpg) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy)) + geom_point(mapping = aes(x = displ, y = hwy))
+```
+
+The following will produce teh same graph while only specifying the data once.
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth()
+```
+
+You can add different aesthetics to different layers.
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth()
+```
+Add you can add different data to different layers. In this example, the smooth geom is only for subcompact cars.
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point(mapping = aes(color = class)) + 
+  geom_smooth(data = filter(mpg, class == "subcompact"), se = FALSE)
+```
+
+##Exercises 3.6
+1. What geom would you use to draw a line chart? boxplot? histogram? area chart?
+geom_line, geom_boxplot, geom_histogram, geom_area
+
+2. Run teh followign, what does se = FALSE do?
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+Removes the Standard Error around the lines.
+
+3. What does show.legend = FALSE do?  What happens if you remove it?
+
+Remove legend.  It is the default. 
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, line = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+```
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, line = drv, color = drv)) + 
+  geom_point() + 
+  geom_smooth(se = FALSE)
+``
+
+
+```{r}
+ggplot(data = mpg) + 
+  geom_point(mapping = aes(x = displ, y = hwy, color = drv) + 
+  geom_smooth(mapping = aes(x = displ, y = hwy)
+```
+```{r}
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy), se = FALSE)
+```
+```{r}
+ggplot() + 
+  geom_point(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
+  geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy, linetype = drv), se = FALSE)
+```
