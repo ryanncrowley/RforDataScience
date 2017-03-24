@@ -1,0 +1,83 @@
+---
+title: "Chapter7_ExploritoryDataAnalysis"
+author: "Ryann Crowley"
+date: "March 24, 2017"
+output: word_document
+output: md_document
+output: github_document
+---
+
+```{r}
+library(tidyverse)
+```
+
+#7.3 Visualizing distributions
+
+How you visualize a distribution depends on whether the variable is continous or categorical.
+
+In R categorical variables are usually saved as factors or character vectors. Visualize categorical data with bar charts.
+
+```{r}
+ggplot(data = diamonds) + geom_bar(mapping = aes(x=cut))
+```
+
+To obtain the actual number of observations in each category, use dplyr:count()
+
+```{r}
+diamonds %>% count(cut)
+```
+Use a histogram to visualize continous data.
+
+```{r}
+ggplot(data = diamonds) + geom_histogram(mapping = aes(x = carat), binwidth = .5)
+```
+You can obtain the values by combining dyplr::Count() and ggplot2::cut_width()
+
+```{r}
+diamonds %>% count(cut_width(carat, .5))
+```
+
+#7.3 Missing values
+
+Replace unusual values with missing values using teh mutate() and ifelse().
+
+```{r}
+diamonds2 <- diamonds %>% mutate(y = ifelse(y < 3 | y > 20, NA, y))
+```
+
+```{r}
+ggplot(data = diamonds2) + geom_point(mapping = aes(x=x, y=y))
+```
+
+To surpress the warning message for missing values, set na.rm = TRUE
+
+```{r}
+ggplot(data = diamonds2) + geom_point(mapping = aes(x=x, y=y), na.rm = TRUE)
+```
+Sometimes missing values represent actual data (or the nonexistance of an event).  You might want to compare values for cases with or withou a missing value on a specific variable.  For example, a missing value for a variable measuring recent alcohol, may indicate zero/no current use.  In order to compare folks with and without current alcohol use you would make a variable using is.na().
+
+
+
+##7.5 Exercises
+
+2. What varialbe in the diamonds dataset is most important for predicting the price of a diamond?  how is that variable correlated with cut?  Why does the combinations of those two relationships lead to lower quality diamonds being more expensive?
+
+```{r}
+str(diamonds)
+```
+
+```{r}
+ggplot(data = diamonds) + geom_boxplot(mapping = aes(x = clarity, y = price))
+```
+```{r}
+ggplot(data = diamonds) + geom_boxplot(mapping = aes(x = color, y = price))
+```
+
+```{r}
+ggplot(data = diamonds) + geom_point(mapping = aes(x = depth, y = price, color = color))
+```
+
+
+```{r}
+ggplot(data = diamonds) + geom_point(mapping = aes(x = carat, y = price, color = color)) + geom_smooth(mapping = aes(x = carat, y = price, color = color), se = FALSE)
+```
