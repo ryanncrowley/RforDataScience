@@ -1,0 +1,37 @@
+---
+title: "Chapter4_WorkflowBasics"
+author: "Ryann Crowley"
+date: "March 24, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+#4.1 Coding basics
+
+You can use R as a calculator.  
+You can create objects with <-.
+Keyboard shortcut for <- is Alt+- (the minus sign). Oh thank goodness!! Must commit to muscle memory. :) 
+
+
+#4.2 what's in a name
+
+object names must start with a letter and can only contain letters, numbers and .
+
+Rstudio has an auto-completion facility.  Start by typing an object name, add characters until you have a unique prefix, then press return or tab.  Example below.
+```{r}
+this_is_a_really_long_name <- 2.5
+```
+
+```{r}
+this_is_a_really_long_name
+```
+
+Oops, the variable above should have a value of 3.5.  Stary by typing "this" and reassign using the auto-completion and the Ctrl+ Up arrow shortcut. The new shortcut will list all the commands you've typed taht start with those letters.
+
+```{r}
+this_is_a_really_long_name <- 3.5
+```
