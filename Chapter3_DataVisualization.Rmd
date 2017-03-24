@@ -2,7 +2,9 @@
 title: "Chapter 2 - Visualization"
 author: "Ryann Crowley"
 date: "March 23, 2017"
-output: pdf_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -301,3 +303,84 @@ ggplot() +
   geom_point(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) + 
   geom_smooth(data = mpg, mapping = aes(x = displ, y = hwy, linetype = drv), se = FALSE)
 ```
+#3.7 Statistical Transformations
+##3.7 Exercises
+
+1. what is teh default geom for stat_summary()?
+boxplot
+
+```{r}
+ggplot(data = diamonds) + geom_boxplot(mapping = aes (x = cut, y = depth))
+
+```
+2. What does geom_col() do? How is it different than geom_bar()?
+
+geom_col using identity...so height of bar equals value of x.
+
+geom_bar uses count...so height of bar is equal to number of cases or proportion of cases with that valeu.
+
+4. What varialbles does stat_smooth() compute?
+
+```{r}
+?stat_smooth
+```
+
+y, ymin, ymax, se
+
+5. In our proportion bar chart, we need to set group =1. Why?  In other words, what is the problem with these two graphs?
+
+```{r}
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, y = ..prop..))
+
+ggplot(data = diamonds) + 
+  geom_bar(mapping = aes(x = cut, fill = color, y = ..prop..))
+```
+Looks like every value of cut goes from 0-100%.
+
+#3.8 Position Adjustments
+2. What parameters to geom_jitter() control the amount of jittering?
+```{r}
+?geom_jitter
+```
+heigth and width - the default is 40%...not totally sure what this means.
+
+#3.9 Coordinated Systems
+coord_flip() switches the x and y axis. helpful if you want horizontal boxplots or have long labels..
+
+```{r}
+ggplot(data = mpg, mapping = aes(x=class, y = hwy)) + geom_boxplot()
+
+ggplot(data = mpg, mapping = aes(x=class, y = hwy)) + geom_boxplot() + coord_flip()
+
+```
+
+
+coord_quickmap() sets the aspect ratio for maps.
+
+```{r}
+nz <- map_data("nz")
+ggplot(nz, aes(long, lat, group = group)) + geom_polygon(fill = "white", color = "black")
+
+ggplot(nz, aes(long, lat, group = group)) + geom_polygon(fill = "white", color = "black")+coord_quickmap()
+```
+##3.9 Exercises
+2. What does labs() do?
+Adjust content and aesthetic of labels.
+
+3. what does geom_abline() and coord_fix() do in the following plot?
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() +  geom_abline() +
+  coord_fixed()
+
+
+```
+geom_fix() sets the aspect ratio for the height and width of the graph.  WIthout it, the width of the graph is larger making the relationship between hwy and cty look less dramatic.
+
+geom_abline() is a reference line and is not influenced or related to the values within the data by any means.
+
+#3.10 The layered grammer of graphics
+
+
